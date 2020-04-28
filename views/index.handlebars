@@ -1,0 +1,32 @@
+<div class="album py-5 bg-light">
+    <div class="container">
+
+    {{#each dbArticle}}
+      <div class="card mb-4 border-primary shadow-sm">
+        <div class="card-body row">
+          <div class="col-md-9">
+            <a href="https://www.nytimes.com{{url}}" target="_blank"><h4 class="card-title">{{title}}</h4></a>
+            <p class="card-text">{{summary}}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              {{!-- <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+              </div> --}}
+            </div>
+          </div>          
+          <div class="col-md-3"> 
+            {{#if img}}
+            <img src="{{img}}" class="card-img-top" alt="...">
+             {{/if}}
+          </div>   
+          <button type="button" class="btn btn-outline-primary ml-3 save" data-id="{{_id}}">Save Article</button>                
+        </div>
+      </div>
+    {{/each}}
+
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
