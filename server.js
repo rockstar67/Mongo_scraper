@@ -1,50 +1,33 @@
+// Dependencies
 var express = require("express");
-var exphbs = require("express-handlebars");
-// var logger = require("morgan");
-var mongoose = require("mongoose");
+var expressHandlebars = require("express-handlebars");
+var bodyParser = require("body-parser");
 
-
+// Initializing the port
 var PORT = process.env.PORT || 3000;
 
-//initialize express
+// Initializing Express
 var app = express();
 
-//use morgan logger for logging requests
-// app.use(logger("dev"));
-//parse request body as JSON
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// Set up an Express Router
+var router = express();
 
-//make public a static folder
-app.use(express.static("public"));
+// Designate our public folder as a static directory
+app.use(express.static(__dirname + "/public"));
 
-
-
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
-
-
-// Handlebars
-app.engine(
-    "handlebars",
-    exphbs({
-        defaultLayout: "main"
-    })
-);
+app.engine("handlebars", expressHandlebars({
+    defaultLayout: "main"
+}));
 app.set("view engine", "handlebars");
 
-// Routes
-require("./routes/apiRoutes")(app);
-require("./routes/htmlRoutes")(app);
+// Use bodyparser in our app
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 
+app.use(router);
 
-// Start the server
-app.listen(PORT, function(){
-    console.log(
-        "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
-        PORT,
-        PORT
-      );
-});
-
-module.exports = app;
+// Starting the server
+app.listen(PORT, function() {
+    console.log("App running on port: " + PORT);
+  });
