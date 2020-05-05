@@ -1,60 +1,50 @@
-// Dependencies
 var express = require("express");
-var bodyParser = require("body-parser");
-var mongoose = require("mongoose");
 var exphbs = require("express-handlebars");
-var Note = require("./models/Note.js");
-var Article = require("./models/Article.js");
+// var logger = require("morgan");
+var mongoose = require("mongoose");
 
-mongoose.Promise = Promise;
 
-// Initialize Express
+var PORT = process.env.PORT || 3000;
+
+//initialize express
 var app = express();
 
-// Use body parser with our app
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
+//use morgan logger for logging requests
+// app.use(logger("dev"));
+//parse request body as JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Make public a static dir
-app.use(express.static(process.cwd() + "/public"));
+//make public a static folder
+app.use(express.static("public"));
 
-// Database configuration with mongoose
-var databaseUri = "mongodb://localhost/savedarticlesmongo";
 
-if (process.env.MONGODB_URI) {
-    mongoose.connect(process.env.MONGODB_URI);
-} else {
-    mongoose.connect(databaseUri);
-}
 
-var db = mongoose.connection;
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
-db.on("error", function (error) {
-    console.log("Mongoose Error: ", error);
-});
 
-db.once("open", function () {
-    console.log("Mongoose connection sucessful.");
-});
-
-//set engine and default for handlebars
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+// Handlebars
+app.engine(
+    "handlebars",
+    exphbs({
+        defaultLayout: "main"
+    })
+);
 app.set("view engine", "handlebars");
 
-// Import routes and give the server access to them.
-var router = express.Router();
+// Routes
+require("./routes/apiRoutes")(app);
+require("./routes/htmlRoutes")(app);
 
-// Require routes file pass router object
-require("./config/routes")(router);
 
-// Have every request go through router middlewar
-app.use(router);
-
-//set port
-var port = process.env.PORT || 3001;
-
-//setup listener
-app.listen(port, function () {
-    console.log("app running on port " + port);
+// Start the server
+app.listen(PORT, function () {
+    console.log(
+        "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
+        PORT,
+        PORT
+    );
 });
+
+module.exports = app;
