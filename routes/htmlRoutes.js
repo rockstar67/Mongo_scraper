@@ -45,8 +45,9 @@ module.exports = function(app) {
           if(!dbArticle.length){
             db.Article.create(result)
             .then(function(dbNewArticle){
-              // console.log(dbNewArticle)
-              // res.json(dbNewArticle);
+              
+               console.log(dbNewArticle)
+               res.json(dbNewArticle);
               res.redirect('/');
             })
             .catch(function(err){
