@@ -1,33 +1,60 @@
 // Dependencies
 var express = require("express");
-var expressHandlebars = require("express-handlebars");
 var bodyParser = require("body-parser");
+var mongoose = require("mongoose");
+var exphbs = require("express-handlebars");
+var Note = require("./models/Note.js");
+var Article = require("./models/Article.js");
 
-// Initializing the port
-var PORT = process.env.PORT || 3000;
+mongoose.Promise = Promise;
 
-// Initializing Express
+// Initialize Express
 var app = express();
 
-// Set up an Express Router
-var router = express();
-
-// Designate our public folder as a static directory
-app.use(express.static(__dirname + "/public"));
-
-app.engine("handlebars", expressHandlebars({
-    defaultLayout: "main"
-}));
-app.set("view engine", "handlebars");
-
-// Use bodyparser in our app
+// Use body parser with our app
 app.use(bodyParser.urlencoded({
     extended: false
 }));
 
+// Make public a static dir
+app.use(express.static(process.cwd() + "/public"));
+
+// Database configuration with mongoose
+var databaseUri = "mongodb://localhost/savedarticlesmongo";
+
+if (process.env.MONGODB_URI) {
+    mongoose.connect(process.env.MONGODB_URI);
+} else {
+    mongoose.connect(databaseUri);
+}
+
+var db = mongoose.connection;
+
+db.on("error", function (error) {
+    console.log("Mongoose Error: ", error);
+});
+
+db.once("open", function () {
+    console.log("Mongoose connection sucessful.");
+});
+
+//set engine and default for handlebars
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+// Import routes and give the server access to them.
+var router = express.Router();
+
+// Require routes file pass router object
+require("./config/routes")(router);
+
+// Have every request go through router middlewar
 app.use(router);
 
-// Starting the server
-app.listen(PORT, function() {
-    console.log("App running on port: " + PORT);
-  });
+//set port
+var port = process.env.PORT || 3001;
+
+//setup listener
+app.listen(port, function () {
+    console.log("app running on port " + port);
+});
