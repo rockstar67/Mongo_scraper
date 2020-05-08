@@ -8,7 +8,7 @@ $(document).ready(function() {
     $(document).on("click", ".deleteComment", deleteComment);
     
 });
-
+// Save article data
 function saveArticle(){
     $.ajax({
         method: "PUT",
@@ -22,6 +22,7 @@ function saveArticle(){
     })
 };
 
+// Delete article data
 function deleteArticle(){
     $.ajax({
         method : "DELETE",
@@ -36,6 +37,7 @@ function deleteArticle(){
 function add(){
     // console.log($("#contentInput").val());
 
+    // Post saved article
     $.ajax({
         method: "POST",
         url: "/savedArticle/" + $(this).data("id"),
@@ -50,11 +52,15 @@ function add(){
     })
 };
 
+
+
+// Get saved article
+
 function addComment(event){
     event.preventDefault();
     $.ajax({
         method: "GET",
-        url: "/savedArticle/" + $(this).data("id")
+        url: "/savedArticle" + $(this).data("id")
     })
     .then(function(dbSavedArticle){
         $("#commentSection").empty();
@@ -72,6 +78,8 @@ function addComment(event){
     $("#commentModal").modal('toggle');
 
 }
+
+// Delete comment data
 function deleteComment(){
     $.ajax({
         method:"DELETE",

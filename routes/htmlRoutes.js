@@ -29,6 +29,7 @@ module.exports = function(app) {
   // Scrape
   app.get("/scrape", function(req, res) {
     axios.get("https://www.nytimes.com/section/us").then(function(response){
+      console.log(response.data);
       var $ = cheerio.load(response.data);
       var resultArr = [];
       $("#stream-panel .css-1cp3ece").each(function(i, element){
