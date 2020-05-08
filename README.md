@@ -14,3 +14,5 @@ An app that uses cheerio and mongoose packages to scrape New York Times site. It
 
 # ScreenShots
 
+![image](https://user-images.githubusercontent.com/56149337/81378293-e8f6e480-90bb-11ea-9f95-87886fcc6d46.png)
+[](url)
